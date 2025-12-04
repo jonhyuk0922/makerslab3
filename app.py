@@ -1,48 +1,179 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="서울 점심 추천 – TripAdvisor 스타일",
-    page_icon="🍽️",
+    page_title="서울 점심 추천 – Minions Edition",
+    page_icon="🍌",
     layout="wide",
 )
 
 # =========================
-# 스타일 (Tripadvisor 비슷하게)
+# 스타일 (Minions 느낌으로 변경)
 # =========================
 st.markdown(
     """
 <style>
-.main {
-    background-color: #f5f5f5;
+:root {
+    --minion-yellow: #ffe75c;
+    --minion-yellow-soft: #fff5a8;
+    --minion-blue: #1c6fd9;
+    --minion-blue-soft: #d3e4ff;
+    --minion-gray: #4f4f4f;
 }
 
+/* 전체 배경 */
+[data-testid="stAppViewContainer"] {
+    background: radial-gradient(circle at top, #fff9c4 0, #fffde7 35%, #fff9c4 70%, #fffce0 100%);
+}
+
+/* 상단 헤더 영역 투명하게 */
+[data-testid="stHeader"] {
+    background: rgba(255,255,255,0);
+}
+
+/* 컨텐츠 영역 살짝 가운데로 */
+.block-container {
+    padding-top: 1.5rem;
+    padding-bottom: 3rem;
+}
+
+/* 입력창 / 셀렉트박스 / 버튼 공통 느낌 */
+.stTextInput > div > div > input {
+    border-radius: 999px;
+    padding: 0.6rem 1.1rem;
+    border: 2px solid var(--minion-blue-soft);
+    background-color: #ffffffaa;
+}
+
+.stSelectbox > div > div {
+    border-radius: 999px;
+    border: 2px solid var(--minion-blue-soft);
+    background-color: #ffffffdd;
+}
+
+/* 버튼 - 미니언즈 블루 */
+.stButton > button {
+    border-radius: 999px;
+    border: none;
+    padding: 0.6rem 1.3rem;
+    background: var(--minion-blue);
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    transition: transform 0.05s ease-out, box-shadow 0.05s ease-out, background 0.15s;
+}
+
+.stButton > button:hover {
+    background: #1653a7;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+}
+
+.stButton > button:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+}
+
+/* 슬라이더 색감 */
+[data-baseweb="slider"] > div > div {
+    background-color: var(--minion-blue-soft);
+}
+[data-baseweb="slider"] [role="slider"] {
+    background-color: var(--minion-blue);
+}
+
+/* 왼쪽 필터 카드 느낌 */
+.css-1r6slb0, .css-1d391kg {  /* Streamlit 버전에 따라 필터 박스 감싸는 div */
+    border-radius: 18px !important;
+    background: #ffffffbb;
+    padding: 1rem 1.2rem;
+}
+
+/* 검색바 커스텀 (위에서 st.text_input 옆에 설명용 div) */
 .search-bar input {
     border-radius: 999px !important;
     padding: 0.75rem 1.25rem !important;
-    border: 1px solid #c0c0c0 !important;
+    border: 2px solid var(--minion-blue-soft) !important;
 }
 
+/* 레스토랑 카드 */
 .restaurant-card {
-    background-color: #ffffff;
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 12px;
+    background: linear-gradient(135deg, var(--minion-yellow-soft), #ffffff);
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 14px;
     display: flex;
     gap: 16px;
-    border: 1px solid #e0e0e0;
+    border: 2px solid #ffe082;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+    position: relative;
+    overflow: hidden;
 }
 
+/* 카드 상단에 살짝 도트 패턴 느낌 */
+.restaurant-card::before {
+    content: "";
+    position: absolute;
+    right: -30px;
+    top: -30px;
+    width: 120px;
+    height: 120px;
+    background-image: radial-gradient(circle, #ffeb3b55 2px, transparent 2px);
+    background-size: 12px 12px;
+    opacity: 0.6;
+}
+
+/* 카드 이미지 – 미니언즈 얼굴 느낌 */
 .card-image {
     width: 140px;
     height: 100px;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #e8f3ff, #d6e5ff);
+    border-radius: 18px;
+    background: radial-gradient(circle at 30% 30%, #fffde7 0, #ffe75c 40%, #ffd54f 75%);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px;
+    font-size: 34px;
     color: #2b4b6f;
     flex-shrink: 0;
+    border: 3px solid var(--minion-blue);
+    position: relative;
+}
+
+/* 미니언즈 고글(눈) 표현 */
+.card-image::before, .card-image::after {
+    content: "";
+    position: absolute;
+    top: 38%;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 3px solid #616161;
+    background: #fafafa;
+}
+.card-image::before {
+    left: 24px;
+}
+.card-image::after {
+    right: 24px;
+}
+
+/* pupils */
+.card-image span {
+    position: relative;
+}
+.card-image span::before, .card-image span::after {
+    content: "";
+    position: absolute;
+    top: -6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #424242;
+}
+.card-image span::before {
+    left: -26px;
+}
+.card-image span::after {
+    right: -26px;
 }
 
 .card-content {
@@ -59,33 +190,62 @@ st.markdown(
 .card-title-row h3 {
     margin: 0;
     font-size: 18px;
+    color: #3c3c3c;
+    font-weight: 800;
 }
 
+/* 영업중 뱃지 – 연두색 */
 .card-status {
     font-size: 12px;
-    padding: 2px 6px;
-    border-radius: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
     background-color: #e6f4ea;
     color: #137333;
+    font-weight: 600;
 }
 
+/* 평점/정보 줄 */
 .card-rating {
     font-size: 14px;
-    color: #222;
+    color: #424242;
     margin-bottom: 4px;
 }
 
+/* 태그 줄 – 파란 pill 느낌 */
 .card-tags {
-    font-size: 13px;
-    color: #555;
-    margin-bottom: 4px;
+    font-size: 12px;
+    color: #1b3c78;
+    margin-bottom: 6px;
 }
 
+.card-tags span {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--minion-blue-soft);
+    margin-right: 4px;
+    margin-bottom: 2px;
+}
+
+/* 리뷰 한 줄 */
 .card-snippet {
     font-size: 13px;
     color: #555;
     font-style: italic;
 }
+
+/* info 박스 */
+.stAlert {
+    border-radius: 16px;
+    background-color: #fffde7;
+    border: 1px solid #ffe082;
+}
+
+/* 작은 캡션류 글자 */
+small {
+    color: var(--minion-gray);
+}
+
 </style>
 """,
     unsafe_allow_html=True,
@@ -198,14 +358,16 @@ PRICE_ORDER = {"₩": 1, "₩₩": 2, "₩₩ - ₩₩₩": 2.5, "₩₩₩": 3}
 # =========================
 # 헤더 + 검색 + 버튼
 # =========================
-st.markdown("### 서울 음식점")
-st.write("서울의 인기 점심 음식점")
+st.markdown("## 🐥 서울 점심 미니언즈 추천")
+st.write("노랑노랑 귀여운 서울 점심 맛집 리스트야. 오늘 점심 뭐 먹을지 같이 골라보자! 🍌")
 
 top_left, top_mid, top_right = st.columns([4, 2, 2])
 
 with top_left:
     search_text = st.text_input(
-        "", placeholder="검색 (가게 이름, 지역, 태그 등)", label_visibility="collapsed"
+        "",
+        placeholder="검색 (가게 이름, 지역, 태그 등)",
+        label_visibility="collapsed",
     )
     st.markdown('<div class="search-bar"></div>', unsafe_allow_html=True)
 
@@ -215,7 +377,6 @@ with top_mid:
     )
 
 with top_right:
-    # 🔥 여기서 다른 페이지로 이동
     if st.button("🍽️ 점심 메뉴 추천 받기"):
         # Streamlit 1.25+ 에서 지원
         st.switch_page("pages/1_점심_추천_결과.py")
@@ -226,28 +387,28 @@ with top_right:
 left, right = st.columns([1, 3])
 
 with left:
-    st.subheader("음식점 타입")
+    st.subheader("🍌 음식점 타입")
     selected_cuisine = st.multiselect(
         "요리",
         options=sorted({r["cuisine"] for r in RESTAURANTS}),
         default=sorted({r["cuisine"] for r in RESTAURANTS}),
     )
 
-    st.subheader("식사 유형")
+    st.subheader("🍽️ 식사 유형")
     selected_meal = st.multiselect(
         "식사",
         options=["아침식사", "브런치", "점심식사", "저녁식사"],
         default=["점심식사"],
     )
 
-    st.subheader("가격대")
+    st.subheader("💸 가격대")
     selected_price = st.multiselect(
         "가격",
         options=["₩", "₩₩", "₩₩ - ₩₩₩", "₩₩₩"],
         default=["₩", "₩₩", "₩₩ - ₩₩₩", "₩₩₩"],
     )
 
-    st.subheader("평점")
+    st.subheader("⭐ 최소 평점")
     min_rating = st.slider("최소 평점", 0.0, 5.0, 4.0, 0.1)
 
 
@@ -305,17 +466,25 @@ def filter_restaurants():
 
 with right:
     filtered_list = filter_restaurants()
-    st.write(f"{len(filtered_list)}개의 결과")
+    st.write(f"🔍 {len(filtered_list)}개의 결과가 있어요")
 
     if not filtered_list:
-        st.info("조건에 맞는 가게가 없어요. 필터를 조금 완화해볼까?")
+        st.info("조건에 맞는 가게가 없어요. 필터를 조금 완화해볼까? 🥲")
     else:
         for r in filtered_list:
+            # 태그/식사 타입을 pill 형태로 보여주도록 감싸기
+            tags_html = "".join(
+                f"<span>{tag}</span>" for tag in r["tags"]
+            )
+            meals_html = "".join(
+                f"<span>{m}</span>" for m in r["meal_types"]
+            )
+
             st.markdown(
                 f"""
 <div class="restaurant-card">
   <div class="card-image">
-    🍽️
+    <span></span>
   </div>
   <div class="card-content">
     <div class="card-title-row">
@@ -326,7 +495,7 @@ with right:
       ⭐ {r['rating']} · {r['reviews']}건의 리뷰 · {r['price']} · {r['cuisine']} · {r['area']}
     </div>
     <div class="card-tags">
-      {" · ".join(r["tags"])} · {", ".join(r["meal_types"])}
+      {tags_html}{meals_html}
     </div>
     <div class="card-snippet">
       {r['snippet']}
